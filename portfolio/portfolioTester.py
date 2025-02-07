@@ -1,7 +1,10 @@
+
 import json
 from trade import Trade
-from position import Position
 from portfolio import Portfolio
+
+def print_json(data):
+    print(json.dumps(data, indent=4))
 
 p = Portfolio(10000)
 
@@ -13,4 +16,4 @@ t2 = Trade("APPL", "23.5", "50", "long", "equity")
 
 p.addTrade(t1)
 print(p.cash)
-print(p.positions)
+print_json(p.toDict())

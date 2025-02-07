@@ -1,6 +1,6 @@
-from datetime import datetime
 
-class trade():
+
+class Trade():
     def __init__(self, 
                  ticker: str, 
                  price: float, 
@@ -30,7 +30,7 @@ class trade():
         }
     
     def getValue(self):
-        return self.quantity * self.price
+        return float(self.quantity) * float(self.price)
     
 
 

@@ -1,7 +1,6 @@
 import json
 from trade import Trade
 from typing import List
-from portfolio import Portfolio
 
 class Position:
     LONG = "long"
@@ -9,7 +8,7 @@ class Position:
     SELL = "sell"
     COVER = "cover"
 
-    def __init__(self, portfolio: Portfolio, ticker: str, trades: List[Trade] = None):
+    def __init__(self, portfolio, ticker: str, trades: List[Trade] = None):
         self.p = portfolio
         self.ticker = ticker
         self.trades = trades if trades else []
@@ -27,10 +26,10 @@ class Position:
             pass
         elif trade.trade_type == "long":
             self.trades.append(trade)
-            self.portfolio.subtractCash(trade.getValue())
+            self.p.subtractCash(trade.getValue())
 
 
-    def to_dict(self):
+    def toDict(self):
         return {
             "ticker": self.ticker,
             "trades": [trade.to_dict() for trade in self.trades]
