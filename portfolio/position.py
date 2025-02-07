@@ -14,7 +14,7 @@ class Position:
         self.trades = trades if trades else []
 
     def addTrade(self, trade: Trade):
-        if trade.trade_type == "sell":
+        if trade.trade_type == self.SELL:
             if self.sellPosition(trade) == True:
                return True
             else:
@@ -32,28 +32,30 @@ class Position:
     def toDict(self):
         return {
             "ticker": self.ticker,
-            "trades": [trade.to_dict() for trade in self.trades]
+            "trades": [trade.toDict() for trade in self.trades]
         }
     
     def sellPosition(self, st: Trade):
-        for i in range(0,len(self.trades)):
-            lt = self.trades[i]
+        for lt in self.trades:
             if (lt.trade_type == self.LONG):
                 if (lt.quantity == st.quantity):
-                    self.trades.remove(i)
+                    self.trades.remove(lt)
                     self.p.addCash(st.getValue())
                     return True
-        for i in range(0,len(self.trades)):
-            lt = self.trades[i]
+        for lt in self.trades:
             if (lt.trade_type == self.LONG):
-                if (lt.quantity > st.quantity):
-                    lt.quantity -= st.quantity
+                if (int(lt.quantity) > int(st.quantity)):
+                    lt.quantity = int(lt.quantity) - int(st.quantity)
                     self.p.addCash(st.getValue())
                     return True
-                if (lt.quantity < st.quantity):
-                    st.quantity -= lt.quantity
-                    self.p.addCash(st.getValue())
-                
+                if (int(lt.quantity) < int(st.quantity)):
+                    st.quantity = int(st.quantity) - int(lt.quantity)
+                    self.p.addCash(float(lt.quantity) * float(st.price))
+                    self.trades.remove(lt)
+                    self.sellPosition(st)
+        return False
+    
+
 
 
                     
