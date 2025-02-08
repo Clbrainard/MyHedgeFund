@@ -29,11 +29,16 @@ class Position:
             self.p.subtractCash(trade.getValue())
 
 
-    def toDict(self):
+    def to_dict(self):
         return {
             "ticker": self.ticker,
-            "trades": [trade.toDict() for trade in self.trades]
+            "trades": [trade.to_dict() for trade in self.trades]
         }
+    
+    def from_dict(data):
+        trades = [Trade.from_dict(trade) for trade in data["trades"]]
+        return Position(data["symbol"], data["position_type"], data["average_price"], data["quantity"], trades)
+
     
     def sellPosition(self, st: Trade):
         for lt in self.trades:

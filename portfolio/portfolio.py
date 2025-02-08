@@ -9,6 +9,9 @@ class Portfolio():
         self.cash = cash
         self.positions = []
 
+    def getPositions(self):
+        return self.positions
+
     def addTrade(self, trade: Trade):
         for p in self.positions:
             if p.ticker == trade.ticker:
@@ -25,8 +28,14 @@ class Portfolio():
     def subtractCash(self,amount):
         self.cash -= amount
 
-    def toDict(self):
+    def to_dict(self):
         return {
             'cash': self.cash,
-            'positions': [p.toDict() for p in self.positions]
+            'positions': [p.to_dict() for p in self.positions]
         }
+    
+    @staticmethod
+    def from_dict(data):
+        portfolio = Portfolio()
+        portfolio.positions = [Position.from_dict(pos) for pos in data["positions"]]
+        return portfolio

@@ -18,7 +18,7 @@ class Trade():
         self.expiry = expiry if expiry else None
         
 
-    def toDict(self):
+    def to_dict(self):
         return {
             "ticker": self.ticker,
             "price": self.price,
@@ -28,6 +28,9 @@ class Trade():
             "strike": self.strike,
             "expiry": self.expiry
         }
+    
+    def from_dict(data):
+        return Trade(**data)
     
     def getValue(self):
         return float(self.quantity) * float(self.price)
