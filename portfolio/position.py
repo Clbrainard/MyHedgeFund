@@ -1,5 +1,5 @@
 import json
-from trade import Trade
+from portfolio.trade import Trade
 from typing import List
 
 class Position:
@@ -12,6 +12,35 @@ class Position:
         self.p = portfolio
         self.ticker = ticker
         self.trades = trades if trades else []
+
+    def getMktValue(self,price):
+        return self.getQuantity() * price
+    
+    def getQuantity(self):
+        return sum([trade.quantity for trade in self.trades])
+    
+    def getBreakeven(self):
+        return self.getMktValue() / self.getQuantity()
+
+    def getPercentPL(self, currPrice):
+        return round((currPrice - self.getBreakeven()) / self.getBreakeven() * 100, 2)
+    
+    def getDollarPL(self, currPrice):
+        return round((currPrice - self.getBreakeven()) * self.getQuantity(), 2)
+
+    def getPercentPortfolio(self,totalPortfolioValue):
+        return round(self.getMktValue() / totalPortfolioValue * 100, 2)
+
+    def getTradeDataCollums(self,price):
+        mktValue = self.getMktValue(price)
+        return  {"Type": [trade.trade_type for trade in self.trades],
+                "Quantity": [trade.quantity for trade in self.trades],
+                "Price": [trade.price for trade in self.trades],
+                "$ PL": [trade.dollarPL(price) for trade in self.trades],
+                "% PL": [trade.percentPL(price) for trade in self.trades],
+                "Mkt Value": [price * trade.quantity for trade in self.trades],
+                "% Position": [round(((price * trade.quantity)/mktValue) * 100, 2) for trade in self.trades]
+                }
 
     def addTrade(self, trade: Trade):
         if trade.trade_type == self.SELL:
@@ -42,13 +71,13 @@ class Position:
     
     def sellPosition(self, st: Trade):
         for lt in self.trades:
-            if (lt.trade_type == self.LONG):
+            if (lt.trade_type == self.LONG) & (lt.asset == st.asset):
                 if (lt.quantity == st.quantity):
                     self.trades.remove(lt)
                     self.p.addCash(st.getValue())
                     return True
         for lt in self.trades:
-            if (lt.trade_type == self.LONG):
+            if (lt.trade_type == self.LONG) & (lt.asset == st.asset):
                 if (int(lt.quantity) > int(st.quantity)):
                     lt.quantity = int(lt.quantity) - int(st.quantity)
                     self.p.addCash(st.getValue())

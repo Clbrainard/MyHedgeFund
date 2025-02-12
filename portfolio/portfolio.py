@@ -1,11 +1,11 @@
-from position import Position
+from portfolio.position import Position
 import json
-from trade import Trade
+from portfolio.trade import Trade
 from typing import List
 
 class Portfolio():
 
-    def __init__(self, cash: int):
+    def __init__(self, cash: float):
         self.cash = cash
         self.positions = []
 
@@ -36,6 +36,6 @@ class Portfolio():
     
     @staticmethod
     def from_dict(data):
-        portfolio = Portfolio()
+        portfolio = Portfolio(0)
         portfolio.positions = [Position.from_dict(pos) for pos in data["positions"]]
         return portfolio
