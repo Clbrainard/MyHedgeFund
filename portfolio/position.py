@@ -3,7 +3,7 @@ from portfolio.trade import Trade
 from typing import List
 
 class Position:
-    LONG = "long"
+    LONG = "Long"
     SHORT = "short"
     SELL = "sell"
     COVER = "cover"
@@ -53,7 +53,10 @@ class Position:
         elif trade.trade_type == "cover" or trade.trade_type == "short":
             #SHORTING NOT YET IMPLEMENTED  
             pass
-        elif trade.trade_type == "long":
+        elif trade.trade_type == self.LONG:
+            if self.p.cash < trade.getValue():
+                raise Exception("Not enough cash to buy")
+                return False
             self.trades.append(trade)
             self.p.subtractCash(trade.getValue())
 
@@ -66,7 +69,7 @@ class Position:
     
     def from_dict(data):
         trades = [Trade.from_dict(trade) for trade in data["trades"]]
-        return Position(data["symbol"], data["position_type"], data["average_price"], data["quantity"], trades)
+        return Position(data["ticker"], trades)
 
     
     def sellPosition(self, st: Trade):

@@ -10,4 +10,4 @@ def newUser(accountValue, loginID):
     p = Portfolio(accountValue)
     t.save_to_json(p, "data/" + loginID + ".json")
 
-newUser(10000, "admin")
+#newUser(10000, "admin")

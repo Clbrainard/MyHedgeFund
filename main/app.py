@@ -35,7 +35,7 @@ if not st.session_state.logged_in:
 else:
 
     p = Portfolio(0)
-    p = t.load_obj_from_json(p, ("data/" + st.session_state.user + ".json"))
+    p = t.load_obj_from_json(p, "data/" + st.session_state.user + ".json")
 
     arePositions = False
 
@@ -48,7 +48,7 @@ else:
         "📊 **Dashboard**": "Dashboard",
         "📈 **Trades**": "Trades",
         "💼 **Positions**": "Positions",
-        "🏆 **Leaderboard**": "Leaderboard",
+        "🏆 **Analytics**": "Analytics",
         "⚙️ **Options Simulator**": "Options Simulator",
         "📊 **Position Simulator**": "Position Simulator",
         "🔧 **Settings**": "Settings"
@@ -196,15 +196,18 @@ else:
             temp["expiry"] = st.date_input("Expiry Date", key="expiry")
 
         if st.button("Submit Trade"):
-            arePositions = True
-            p.addTrade(Trade(temp["ticker"], temp["price"], temp["quantity"], temp["trade_type"], temp["asset"], temp["strike"], temp["expiry"]))
-            t.save_to_json(p, "data/" + st.session_state.user + ".json")
+            if (temp["price"] * temp["quantity"]) > p.cash:
+                st.error("Not enough cash brokie")
+            else:
+                arePositions = True
+                p.addTrade(Trade(temp["ticker"], temp["price"], temp["quantity"], temp["trade_type"], temp["asset"], temp["strike"], temp["expiry"]))
+                t.save_to_json(p, "data/" + st.session_state.user + ".json")
 
     # Leaderboard Page
-    elif page == "Leaderboard":
-        st.title("Leaderboard")
-        st.write("### Top Performers")
-        st.write("(Leaderboard functionality coming soon)")
+    elif page == "Analytics":
+        st.title("Analytics")
+        st.write("### Analytics and Insights")
+        st.write("(Functionality coming soon)")
 
     # Options Simulator Page
     elif page == "Options Simulator":
@@ -226,10 +229,10 @@ else:
         st.subheader("Cash on Hand")
 
         # Input box to change cash on hand value
-        new_cash = st.number_input("Edit cash on hand value:", value=p.cash, step=0.01)
+        new_cash = st.number_input("Edit cash on hand value:", value=p.cash, step=1)
 
         # Button to save the new value
         if st.button("Save"):
             p.cash = new_cash
-            t.save_to_json(p, "data/portfolio.json")
+            t.save_to_json(p, "data/" + st.session_state.user + ".json")
             st.success("Cash on hand value saved successfully!")
