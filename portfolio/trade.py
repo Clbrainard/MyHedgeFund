@@ -6,7 +6,7 @@ class Trade():
                  price: float, 
                  quantity: int, 
                  trade_type: str, #long, sell, short, cover
-                 asset: str, #equity or option
+                 asset: str, #Stock, Call, Put
                  strike: float = None, #for options only
                  expiry: str = None): #for options only
         self.ticker = ticker

@@ -1,6 +1,7 @@
 import json
+import os
 
-def Toolbox():
+class Toolbox:
 
     @staticmethod
     def print_dict(data):
@@ -18,3 +19,13 @@ def Toolbox():
         with open(filename, "r") as f:
             data = json.load(f)
         return obj.from_dict(data)
+
+    @staticmethod
+    def is_json_file_empty(filename):
+        """Checks if a JSON file is empty or contains only whitespace."""
+        with open(filename, "r") as f:
+            content = f.read().strip()
+            return len(content) == 0
+        
+
+
